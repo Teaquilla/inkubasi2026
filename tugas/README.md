@@ -163,5 +163,6 @@ Kumpulkan semua item berikut dalam satu file PDF:
 ---
 
 
-> Selamat mengerjakan! 
-> Pertanyaan teknis diajukan melalui wa [Aldura](https://wa.me/6281333093230).
+> Selamat mengerjakan! \
+> Pertanyaan teknis diajukan melalui wa [Aldura](https://wa.me/6281333093230).\
+> Dilarang melakukan plagiasi dengan peserta inkubasi yang lain.
