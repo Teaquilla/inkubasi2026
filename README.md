@@ -19,29 +19,12 @@ moderno/
 | Backend   | NestJS, TypeORM                         |
 | Database  | PostgreSQL 15                           |
 | Auth      | JWT + Passport.js                       |
-| Docker    | docker-compose (DB + server + client)   |
 
 ---
 
 ## Quick Start
 
-### Option A — Docker (recommended)
-
-```bash
-# Clone and start everything
-docker-compose up -d
-
-# Seed the database (first time only)
-docker-compose exec server npm run seed
-```
-
-- Frontend → http://localhost:3000  
-- Backend API → http://localhost:3001/api  
-- Database → localhost:5432
-
----
-
-### Option B — Local Development
+### Local Development
 
 **Prerequisites:** Node 18+, PostgreSQL running locally
 
@@ -49,6 +32,11 @@ docker-compose exec server npm run seed
 
 ```bash
 psql -U postgres -c "CREATE DATABASE moderno_db;"
+```
+
+Or using docker
+```bash
+docker run --name postgres-moderno -e POSTGRES_USER=postgres  -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=moderno_db -p 5432:5432  -d postgres
 ```
 
 #### 2. Backend (server)

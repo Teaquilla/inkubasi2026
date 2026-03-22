@@ -11,6 +11,7 @@
 | **Bentuk** | Individu |
 | **Pengumpulan** | [Pengumpulan Tugas](https://forms.gle/MSGdvhZo8HD2KQ7h9) |
 | **Penamaan File** | `NIM_NAMA_TUGAS_AKHIR_INKUBASI_DEVOPS.pdf` |
+| **Deadline** | Minggu, 29 Maret 2026 Pukul 23:59 WIB |
 
 ---
 
@@ -26,17 +27,6 @@ Project **MODERNO** adalah aplikasi ecommerce fullstack yang terdiri dari:
 
 Arsitektur ini mencerminkan sistem production nyata yang membutuhkan pipeline deployment yang andal, cepat, dan dapat dipantau. Peserta diminta merancang dan mengimplementasikan infrastruktur DevOps lengkap di atas project MODERNO — mulai dari version control, CI/CD pipeline otomatis, containerization, hingga monitoring.
 
-<!-- ### Tujuan Pembelajaran
-
-- Memahami konsep dan praktik CI/CD pipeline end-to-end
-- Mengimplementasikan containerization dengan Docker dan Docker Compose
-- Menyiapkan automated testing sebagai bagian dari pipeline
-- Mengkonfigurasi monitoring stack (metrics, logs, tracing)
-- Membangun alerting system untuk kondisi anomali production
-- Mendokumentasikan arsitektur infrastruktur secara profesional
-
----
--->
 ## Tugas 1 — Version Control & Branching Strategy
 
 Setup repositori GitHub dengan strategi branching yang tepat untuk mendukung pengembangan paralel dan release management.
@@ -48,17 +38,11 @@ Setup repositori GitHub dengan strategi branching yang tepat untuk mendukung pen
    - Git Flow (`main`, `develop`, `feature/*`, `release/*`, `hotfix/*`)
    - GitHub Flow (`main` + feature branches)
    - Trunk-based Development
-<!-- 3. Konfigurasi **branch protection rules** pada branch `main` dan `develop`:
-   - Require pull request sebelum merge
-   - Require at least 1 approving review
-   - Require status checks to pass (CI pipeline)
-   - Disable force push -->
-3. Buat dokumentasi branching strategy dalam laporan PDF
-4. Sertakan commit message convention — [Conventional Commits](https://www.conventionalcommits.org) direkomendasikan
+3. Sertakan dokumentasi branching strategy yang digunakan ke dalam laporan PDF
 
 ---
 
-## Tugas 2 — Containerization & Docker Optimization 
+## Tugas 2 — Containerization 
 
 Buat konfigurasi Docker dan pastikan semua service berjalan dengan benar di lingkungan containerized.
 
@@ -67,86 +51,55 @@ Buat konfigurasi Docker dan pastikan semua service berjalan dengan benar di ling
 1. Buat `Dockerfile` untuk `client` dan `server`:
    - Gunakan **multi-stage build** untuk meminimalkan image size
    - Tambahkan `.dockerignore` yang tepat
-   <!-- - Pastikan image berjalan sebagai **non-root user**
-   - Pin versi base image (contoh: `node:20.11-alpine`) -->
 
 2. Buatlah `docker-compose.yml`:
    - Tambahkan health checks untuk semua service
    - Konfigurasi resource limits (CPU & memory)
    - Gunakan named volumes untuk persistensi data
    - Pisahkan `docker-compose.yml` (dev) dan `docker-compose.prod.yml`
-
-<!-- 3. Buat `docker-compose.override.yml` untuk keperluan development (hot reload, debug port) -->
 3. Dokumentasikan cara menjalankan project secara lokal dengan Docker
-4. Sertakan output `docker images ls` dan `docker stats` sebagai bukti
+4. Sertakan output `docker images ls` dan `docker stats` kedalam laporan sebagai bukti
 
 ---
 
-## Tugas 3 — CI Pipeline dengan GitHub Actions 
+## Tugas 4 — CD Pipeline & Deployment  
 
-Bangun Continuous Integration pipeline yang otomatis berjalan setiap ada push atau pull request ke repository.
-
-### Stage 1 — Code Quality
-
-- **Linting:** ESLint untuk frontend (Next.js) dan backend (NestJS)
-- **Format check:** Prettier
-<!-- - **Type check:** TypeScript compiler (`tsc --noEmit`)
-- **Dependency audit:** `npm audit --audit-level=high` -->
-
-### Stage 2 — Testing
-
-- **Unit tests:** Jest untuk NestJS services dan controllers
-<!-- - **Integration tests:** Supertest untuk endpoint API
-- **Code coverage:** minimum **70% coverage**
-- Upload coverage report ke Codecov atau artifact GitHub Actions -->
-
-### Stage 3 — Build
-
-- Build Docker image untuk `client` dan `server`
-- Tag image dengan: `latest`, branch name, dan commit SHA
-- Push image ke registry (Docker Hub atau GitHub Container Registry)
-<!-- - Scan image untuk vulnerability menggunakan **Trivy** atau **Snyk** -->
-
-<!-- ### Stage 4 — Notify
-
-- Kirim notifikasi status pipeline ke Slack atau email
-- Generate build summary sebagai GitHub Actions job summary -->
-
-### Konfigurasi wajib di semua stage
-
-<!-- - Caching dependencies (`npm cache`) untuk mempercepat pipeline
-- Matrix testing minimal Node.js 18 & 20
-- Parallelism antar stage yang tidak saling bergantung -->
-- Environment secrets management menggunakan GitHub Secrets
+Bangun **Continuous Deployment pipeline** untuk men-deploy aplikasi MODERNO ke environment staging dan production secara terstruktur menggunakan beberapa stage deployment.
 
 ---
 
-## Tugas 4 — CD Pipeline & Deployment 
+### Stage 1 — Deployment ke Staging
 
-Implementasikan Continuous Deployment pipeline untuk men-deploy aplikasi MODERNO ke environment staging dan production.
+- Deployment otomatis berjalan saat ada **push ke branch `develop`** (atau yang sejenis pada branch kamu) dan seluruh CI pipeline berhasil
+- Service harus berhasil dijalankan menggunakan Docker container
+- Health check service harus dijalankan setelah deployment
+- Aplikasi staging harus dapat diakses melalui **public URL**
 
-### Yang harus dikerjakan
 
-1. Buat dua environment deployment:
-   - **Staging:** deploy otomatis dari branch `develop` setelah CI pass
-   - **Production:** deploy manual dengan approval dari branch `main`
+### Stage 2 — Database Migration
 
-2. Pilih salah satu strategi deployment dan jelaskan alasannya:
-   - Blue-Green Deployment
-   - Rolling Update
-   - Canary Deployment
+- Jalankan **TypeORM migrations** sebagai bagian dari proses deployment
+- Migration harus berjalan sebelum service backend dijalankan
+- Pipeline harus gagal jika migration gagal dijalankan
 
-3. Implementasikan **rollback otomatis** jika health check gagal setelah deployment
 
-4. Konfigurasi environment variables yang berbeda untuk staging dan production menggunakan GitHub Environments
+### Stage 3 — Deployment ke Production
 
-5. Buat **deployment runbook** dalam format Markdown yang mencakup:
-   - Pre-deployment checklist
-   - Deployment steps
-   - Post-deployment verification
-   - Rollback procedure
+- Deployment hanya dapat dilakukan dari **branch `main`**
+- Deployment harus menggunakan **manual approval** melalui GitHub Environments
+- Peserta harus memilih salah satu strategi deployment berikut dan menjelaskan alasannya dalam laporan:
+  - Blue-Green Deployment
+  - Rolling Update
+  - Canary Deployment
 
-6. Implementasikan database migration sebagai bagian dari pipeline (gunakan TypeORM migrations)
+
+### Stage 4 — Environment Configuration
+
+- Gunakan **GitHub Environments** untuk memisahkan konfigurasi:
+  - staging environment variables
+  - production environment variables
+- Secrets tidak boleh disimpan langsung di repository
+
 
 ---
 
