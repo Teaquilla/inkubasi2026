@@ -1,0 +1,77 @@
+services:
+  # 1. DATABASE SERVICE
+  db:
+    image: postgres:15-alpine
+    container_name: moderno-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: moderno_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - moderno_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d moderno_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # 2. BACKEND SERVICE (NestJS)
+  server:
+    build:
+      context: ./server
+      target: runner
+    container_name: moderno-server
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: moderno_db
+      JWT_SECRET: rahasia_dev_123
+      JWT_EXPIRES_IN: 7d
+      PORT: 3001
+      NODE_ENV: development
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      db:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # 3. FRONTEND SERVICE (Next.js)
+  client:
+    build:
+      context: ./client
+      target: runner
+    container_name: moderno-client
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+volumes:
+  moderno_db_data:
