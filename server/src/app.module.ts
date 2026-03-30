@@ -7,6 +7,7 @@ import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { CartModule } from './cart/cart.module';
 import { AdminModule } from './admin/admin.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -32,6 +33,8 @@ import { AdminModule } from './admin/admin.module';
     OrdersModule,
     CartModule,
     AdminModule,
+    PrometheusModule.register(),
   ],
+  // BAGIAN PROVIDERS SENSOR SUDAH DIHAPUS DARI SINI
 })
 export class AppModule {}
